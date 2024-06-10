@@ -50,7 +50,14 @@ def update_post():
     post.image = data.get('image', post.image)
     db.session.commit()
     return jsonify({"message": "Post updated"}), 200
-
+    
+@post_bp.route('/api/post/get/<int:user_id>', methods=['GET'])
+def get_posts_by_user(user_id):
+    posts = Post.query.filter_by(user_id=user_id).all()
+    if posts:
+        return jsonify([post.serialize() for post in posts]), 200
+    return jsonify({"message": "Posts not found"}), 400
+    
 @post_bp.route('/api/post/delete/<int:post_id>', methods=['DELETE'])
 def delete_post(post_id):
     post = Post.query.get(post_id)
